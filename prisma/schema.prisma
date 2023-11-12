@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Curso {
+  id              String           @id @default(uuid())
+  nome            String
+  criado          DateTime         @default(now())
+  CursoEstudantes CursoEstudante[]
+
+  @@map("cursos")
+}
+
+model Estudante {
+  id   String @id @default(uuid())
+  nome String
+
+  CursoEstudante CursoEstudante[]
+
+  @@map("estudantes")
+}
+
+model CursoEstudante {
+  id           String    @id @default(uuid())
+  id_curso     String
+  curso        Curso     @relation(fields: [id_curso], references: [id])
+  id_estudante String
+  estudante    Estudante @relation(fields: [id_estudante], references: [id])
+
+  @@map("curso_estudantes")
+}
